@@ -3,7 +3,11 @@ import numpy as np
 from ultralytics import YOLO
 from collections import defaultdict
 from CentroidTracker import CentroidTracker
+from interface import main_interface
 import config
+import threading
+
+activity_score = 0  # Define global variable for activity score
 
 def calculate_weight(distance, max_distance=config.WEIGHT_MAX_DISTANCE, min_weight=config.WEIGHT_MIN, max_weight=config.WEIGHT_MAX):
     weight = max_weight - ((distance / max_distance) * (max_weight - min_weight))
@@ -29,8 +33,8 @@ def calculate_angle(vector1, vector2):
 
 
 def calculate_activity(tracker, previous_positions, frame, activity_scores, direction_scores):
-    activity_score = 0
-    direction_score = 0
+    activity_score_frame = 0  # Reset the activity score for the current frame
+    direction_score_frame = 0
     current_positions = tracker.objects
     static_point = np.array(config.STATIC_POINT)
     print("Current positions:", current_positions)
@@ -48,24 +52,24 @@ def calculate_activity(tracker, previous_positions, frame, activity_scores, dire
                 # Calculate angle and direction-based score
                 angle = calculate_angle(movement_vector, direction_vector)
                 direction_weight = 1 if angle < config.ATTRACTION_ANGLE else 0  #range that object can move towards centroid and still be considered moving towards centroid. 
-                direction_score += distance * direction_weight
-                activity_score += distance * weight * direction_weight
-                tracker.update_activity_score(object_id, activity_score)
-                print(f"Object ID {object_id} moved {distance:.2f} pixels with weight {weight:.2f} and direction weight {direction_weight:.2f} and score is {activity_score:.2f} and direction score is {direction_score:.2f}")
-                
+                direction_score_frame += distance * direction_weight
+                activity_score_frame += distance * weight * direction_weight
+                tracker.update_activity_score(object_id, activity_score_frame)
+                print(f"Object ID {object_id} moved {distance:.2f} pixels with weight {weight:.2f} and direction weight {direction_weight:.2f} and score is {activity_score_frame:.2f} and direction score is {direction_score_frame:.2f}")
                 cv2.line(frame, tuple(previous_position), position_tuple, config.LINE_COLOR, config.LINE_THICKNESS)
     
-    activity_scores.append(activity_score)
-    direction_scores.append(direction_score)
+    activity_scores.append(activity_score_frame)
+    direction_scores.append(direction_score_frame)
     
     smoothed_activity_score = smooth_activity_score(activity_scores)
     smoothed_direction_score = smooth_activity_score(direction_scores)
     
     return smoothed_activity_score, smoothed_direction_score, current_positions
 
+def run_cv_system(activity_score_func):
 
+    global activity_score
 
-def main():
     # Load YOLOv8 model
     model = YOLO(config.YOLO_MODEL_PATH)
 
@@ -81,7 +85,7 @@ def main():
     direction_scores = []
 
     # Initialize a VideoWriter object to export the output video
-    if(config.RECORD_RESULT):
+    if config.RECORD_RESULT:
         out = cv2.VideoWriter('output.mp4', -1, 20.0, (1280, 720))  # adjust FPS and frame size as needed
 
 
@@ -93,9 +97,9 @@ def main():
             break
 
         # Skip every other frame to process at 30fps
-        # frame_count += 1
-        # if frame_count % 2 != 0:
-        #     continue
+        frame_count += 1
+        if frame_count % 2 != 0:
+            continue
         
         # Resize frame to 720p
         frame = cv2.resize(frame, (1280, 720))
@@ -124,6 +128,9 @@ def main():
         # Display smoothed activity score
         cv2.putText(frame, f'Smoothed Activity Score: {activity_score:.2f}', (10, 30), config.FONT, config.FONT_SCALE, config.FONT_COLOR, config.FONT_THICKNESS)
 
+        # Update the activity score in the interface
+        activity_score_func(activity_score)
+
         # Draw bounding boxes and centroids
         for rect in rects:
             cv2.rectangle(frame, (rect[0], rect[1]), (rect[2], rect[3]), config.RECTANGLE_COLOR, config.RECTANGLE_THICKNESS)
@@ -150,6 +157,24 @@ def main():
     # Release video capture and close windows
     cap.release()
     cv2.destroyAllWindows()
+
+
+def main():
+    global activity_score
+
+    # Create a function to store the activity score
+    def update_activity_score(score):
+        global activity_score
+        activity_score = score
+
+    # Start the interface in a separate thread
+    interface_thread = threading.Thread(target=main_interface, args=(lambda: activity_score,))
+    interface_thread.start()
+
+    # Run the CV system
+    run_cv_system(update_activity_score)
+
+
 
 if __name__ == '__main__':
     main()
