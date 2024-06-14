@@ -28,7 +28,7 @@ class DoorSegmentation():
         self.score_label.place(relx=0.5, rely=0.5, anchor="center")  # Center the score inside the frame
 
     def update_score(self):
-        self.score = random.uniform(0, 10)  # Update the score with a new random value
+        self.score = 0
         border_color, bg_color = self.get_colors()
         self.frame.configure(border_color=border_color, fg_color=bg_color)  # Update the colors of the frame
         self.score_label.configure(text="{:.1f}".format(self.score))  # Update the score label text
