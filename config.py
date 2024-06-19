@@ -52,10 +52,10 @@ SMOOTHING_WINDOW_SIZE = 20
 # VIDEO_SOURCE = 'Examples/Train_londen.mp4' 
 # VIDEO_SOURCE = 'Examples/Train_tokio.mp4' 
 
-# VIDEO_SOURCE = 'Videos/GOPR_Drukte.mp4'
+VIDEO_SOURCE = 'Videos/GOPR_Drukte.mp4'
 # VIDEO_SOURCE = 'Videos/GOPR_Wachten.mp4'
 # VIDEO_SOURCE = 'Videos/GOPR_Instappen.mp4'
 # VIDEO_SOURCE = 'Videos/GOPR_InUitStappen.mp4'
 # VIDEO_SOURCE = 'Videos/GOPR_Sprinter.mp4'
 # VIDEO_SOURCE = 'Videos/GOPR_Treuzelen.mp4'
-VIDEO_SOURCE = 'Videos/GOPR_Instappen2.mp4'
+# VIDEO_SOURCE = 'Videos/GOPR_Instappen2.mp4'

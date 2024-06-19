@@ -4,7 +4,7 @@ from DoorSegmentation import DoorSegmentation
 import config
 
 def initialize_app():
-    set_appearance_mode("dark")
+    set_appearance_mode("light")
     set_default_color_theme("dark-blue")
     app = CTk()
     app.geometry("1200x600")
@@ -12,8 +12,8 @@ def initialize_app():
 
 def initialize_top_frame(app):
     # Load image
-    final_image = CTkImage(light_image=Image.open("data/cockpit_interface.jpg"),
-                           dark_image=Image.open("data/cockpit_interface.jpg"),
+    final_image = CTkImage(light_image=Image.open("data/Group 1.png"),
+                           dark_image=Image.open("data/Group 1.png"),
                            size=(1150, 300))
 
     # Create the frame with specified width and height
@@ -25,7 +25,7 @@ def initialize_top_frame(app):
     image_label = CTkLabel(app, text="", image=final_image)
     image_label.pack(pady=12)
 
-def calculate_box_positions_with_margins(screen_width=1200, num_boxes=8, margin=22):
+def calculate_box_positions_with_margins(screen_width=1200, num_boxes=6, margin=50):
     total_width = screen_width - 2 * margin
     box_width = (total_width - (num_boxes - 1) * margin) // num_boxes
     start_margin = margin + (total_width - (num_boxes * box_width + (num_boxes - 1) * margin)) // 2
