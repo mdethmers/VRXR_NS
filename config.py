@@ -40,11 +40,11 @@ FRAME_DELAY = 1
 QUIT_KEY = 'q'
 
 # Smoothing window size for activity score
-SMOOTHING_WINDOW_SIZE = 20
+SMOOTHING_WINDOW_SIZE = 120
 
 
 # Video source
-# VIDEO_SOURCE = 0  # 0 for webcam, or provide a path to a video file
+VIDEO_SOURCE = 1  # 0 for webcam, or provide a path to a video file
 # VIDEO_SOURCE = 'http://145.126.12.171:8080/video'
 # VIDEO_SOURCE = 'Examples/Train_ns.mp4' 
 #VIDEO_SOURCE = 'Examples/Train_instap.mp4' 
@@ -52,7 +52,7 @@ SMOOTHING_WINDOW_SIZE = 20
 # VIDEO_SOURCE = 'Examples/Train_londen.mp4' 
 # VIDEO_SOURCE = 'Examples/Train_tokio.mp4' 
 
-VIDEO_SOURCE = 'Videos/GOPR_Drukte.mp4'
+# VIDEO_SOURCE = 'Videos/GOPR_Drukte.mp4'
 # VIDEO_SOURCE = 'Videos/GOPR_Wachten.mp4'
 # VIDEO_SOURCE = 'Videos/GOPR_Instappen.mp4'
 # VIDEO_SOURCE = 'Videos/GOPR_InUitStappen.mp4'

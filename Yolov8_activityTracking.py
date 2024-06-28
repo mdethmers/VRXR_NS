@@ -3,7 +3,7 @@ import numpy as np
 from ultralytics import YOLO
 from collections import defaultdict
 from CentroidTracker import CentroidTracker
-from interface import main_interface
+from Final_Interface import main_interface
 import config
 import threading
 
@@ -37,8 +37,8 @@ def calculate_activity(tracker, previous_positions, frame, activity_scores, dire
     direction_score_frame = 0
     current_positions = tracker.objects
     static_point = np.array(config.STATIC_POINT)
-    print("Current positions:", current_positions)
-    print("Previous positions:", previous_positions)
+    # print("Current positions:", current_positions)
+    # print("Previous positions:", previous_positions)
     for object_id, position in current_positions.items():
         position_tuple = tuple(map(int, position))  # Convert to a tuple of integers
         if is_point_in_trapezoid(position_tuple, config.TRAPEZOID_VERTICES):
@@ -55,7 +55,7 @@ def calculate_activity(tracker, previous_positions, frame, activity_scores, dire
                 direction_score_frame += distance * direction_weight
                 activity_score_frame += distance * weight * direction_weight
                 tracker.update_activity_score(object_id, activity_score_frame)
-                print(f"Object ID {object_id} moved {distance:.2f} pixels with weight {weight:.2f} and direction weight {direction_weight:.2f} and score is {activity_score_frame:.2f} and direction score is {direction_score_frame:.2f}")
+                # print(f"Object ID {object_id} moved {distance:.2f} pixels with weight {weight:.2f} and direction weight {direction_weight:.2f} and score is {activity_score_frame:.2f} and direction score is {direction_score_frame:.2f}")
                 cv2.line(frame, tuple(previous_position), position_tuple, config.LINE_COLOR, config.LINE_THICKNESS)
     
     activity_scores.append(activity_score_frame)
